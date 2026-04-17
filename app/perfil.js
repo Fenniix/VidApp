@@ -13,12 +13,15 @@ const activityLevels = ['Nulo', 'Ligero', 'Moderado', 'Muy Activo'];
 export default function ProfileScreen() {
   const router = useRouter();
 
-  // Datos personales del paciente (PENDIENTE)
+  // Datos personales del paciente
   const [userProfile, setUserProfile] = useState({
     name: '',
     birthDate: { day: '', month: '', year: '' },
     dietType: 'No definida',
     allergies: '',
+    limitCarbs: '',
+    limitCalories: '',
+    limitSugar: '',
   });
 
   // Datos de salud por caputurar
@@ -86,6 +89,46 @@ export default function ProfileScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+
+          {/* Datos personales */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>0. Datos Personales 👤</Text>
+          <Text style={styles.inputLabel}>Nombre completo</Text>
+          <TextInput 
+            style={styles.fullInput}
+            placeholder="Juan Pérez"
+            value={userProfile.name}
+            onChangeText={(t) => setUserProfile({...userProfile, name: t})}
+          />
+          
+          <Text style={styles.inputLabel}>Fecha de Nacimiento</Text>
+          <View style={styles.dateRow}>
+            <TextInput 
+              style={styles.dateInput} 
+              placeholder="DD" 
+              keyboardType="numeric" 
+              maxLength={2}
+              value={userProfile.birthDate.day}
+              onChangeText={(t) => setUserProfile({...userProfile, birthDate: {...userProfile.birthDate, day: t}})}
+            />
+            <TextInput 
+              style={styles.dateInput} 
+              placeholder="MM" 
+              keyboardType="numeric" 
+              maxLength={2}
+              value={userProfile.birthDate.month}
+              onChangeText={(t) => setUserProfile({...userProfile, birthDate: {...userProfile.birthDate, month: t}})}
+            />
+            <TextInput 
+              style={[styles.dateInput, { flex: 2 }]} 
+              placeholder="AAAA" 
+              keyboardType="numeric" 
+              maxLength={4}
+              value={userProfile.birthDate.year}
+              onChangeText={(t) => setUserProfile({...userProfile, birthDate: {...userProfile.birthDate, year: t}})}
+            />
+          </View>
+        </View>
         
         {/* Datos personales */}
         <View style={styles.section}>
@@ -201,6 +244,42 @@ export default function ProfileScreen() {
             onChangeText={(t) => setUserProfile({...userProfile, allergies: t})}
           />
         </View>
+        {/* Limites diarios */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>4. Límites Diarios Sugeridos 📉</Text>
+          <Text style={styles.hint}>Establece tus metas máximas diarias con tu médico.</Text>
+          
+          <View style={styles.inputRow}>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.miniLabel}>Carbohidratos (g)</Text>
+              <TextInput 
+                style={styles.numericInput} 
+                keyboardType="numeric"
+                value={userProfile.limitCarbs}
+                onChangeText={(t) => setUserProfile({...userProfile, limitCarbs: t})}
+              />
+            </View>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.miniLabel}>Calorías (kcal)</Text>
+              <TextInput 
+                style={styles.numericInput} 
+                keyboardType="numeric"
+                value={userProfile.limitCalories}
+                onChangeText={(t) => setUserProfile({...userProfile, limitCalories: t})}
+              />
+            </View>
+          </View>
+          
+          <View style={[styles.inputWrapper, {marginTop: 10}]}>
+            <Text style={styles.miniLabel}>Azúcares Máximos (g)</Text>
+            <TextInput 
+              style={styles.numericInput} 
+              keyboardType="numeric"
+              value={userProfile.limitSugar}
+              onChangeText={(t) => setUserProfile({...userProfile, limitSugar: t})}
+            />
+          </View>
+        </View>
 
       </ScrollView>
     </View>
@@ -214,17 +293,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
-    paddingTop: 50, paddingHorizontal: 16, paddingBottom: 15,
+    padding: 20, paddingHorizontal: 15,
     backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: Colors.border,
     elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2,
   },
-  navTitle: { fontSize: 18, fontWeight: 'bold', color: Colors.text },
+  navTitle: { fontSize: 18, fontWeight: 'bold', color: Colors.text, paddingLeft: 25 },
   saveText: { color: Colors.primary, fontWeight: 'bold', fontSize: 16 },
   // Estilos Contenido
   content: { padding: 20 },
   section: { marginBottom: 30 },
   sectionTitle: { fontSize: 17, fontWeight: '700', marginBottom: 20, color: Colors.text },
   inputLabel: { fontSize: 14, color: Colors.textSecondary, marginBottom: 8, marginTop: 15 },
+  //Estilos de datos personales
+  dateRow: { flexDirection: 'row', gap: 10 },
+  dateInput: { 
+    flex: 1, backgroundColor: 'white', padding: 12, borderRadius: 8, 
+    borderWidth: 1, borderColor: Colors.border, textAlign: 'center' 
+  },
+  hint: { fontSize: 13, color: Colors.textSecondary, marginBottom: 15, fontStyle: 'italic' },
+  miniLabel: { fontSize: 10, color: Colors.primary, fontWeight: 'bold', marginBottom: -5, marginTop: 5 },
   // Estilos Medidas (Peso/Altura)
   inputRow: { flexDirection: 'row', gap: 15 },
   inputWrapper: {

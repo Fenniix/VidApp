@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import Colors from '../constants/Colors';
@@ -31,7 +31,11 @@ export default function AddRecordScreen() {
       description: description,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       glucose: glucose || "No registrado",
-      insulin: insulin || "0"
+      insulin: insulin || "0",
+      carbs: carbs || "0",
+      calories: calories || "0",
+      sugar: sugar || "0",
+      date: new Date().toISOString().split('T')[0] // Guardamos la fecha para el historial
     };
 
     try {
@@ -48,6 +52,9 @@ export default function AddRecordScreen() {
   const [description, setDescription] = useState('');
   const [glucose, setGlucose] = useState('');
   const [insulin, setInsulin] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [calories, setCalories] = useState('');
+  const [sugar, setSugar] = useState('');
 
   return (
     <KeyboardAvoidingView 
@@ -101,6 +108,43 @@ export default function AddRecordScreen() {
             multiline={true}
             numberOfLines={4}
           />
+        </View>
+
+        {/* 3. Información Nutricional 🍎 */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>3. Información Nutricional (Aprox.)</Text>
+          <View style={styles.inputRow}>
+            <MaterialCommunityIcons name="food-apple-outline" size={20} color={Colors.primary} style={styles.inputIcon} />
+            <TextInput 
+              style={styles.numericInput}
+              placeholder="Carbohidratos (g)"
+              keyboardType="numeric"
+              value={carbs}
+              onChangeText={setCarbs}
+            />
+          </View>
+          
+          <View style={styles.inputRow}>
+            <MaterialCommunityIcons name="fire" size={20} color="#FF9800" style={styles.inputIcon} />
+            <TextInput 
+              style={styles.numericInput}
+              placeholder="Calorías (kcal)"
+              keyboardType="numeric"
+              value={calories}
+              onChangeText={setCalories}
+            />
+          </View>
+
+          <View style={styles.inputRow}>
+            <MaterialCommunityIcons name="Vector-square" size={20} color="#E91E63" style={styles.inputIcon} />
+            <TextInput 
+              style={styles.numericInput}
+              placeholder="Azúcares (g)"
+              keyboardType="numeric"
+              value={sugar}
+              onChangeText={setSugar}
+            />
+          </View>
         </View>
 
         {/* Datos opcionales de glucosa e insulina */}

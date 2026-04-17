@@ -11,10 +11,7 @@ export default function HomeScreen() {
   const [lastMeal, setLastMeal] = useState(null);
   const isFocused = useIsFocused();
 
-  const [userProfile, setUserProfile] = useState({
-    dietType: 'No definida',
-    allergies: 'Sin alergias alimentarias'
-  });
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     if (isFocused) {
@@ -24,10 +21,11 @@ export default function HomeScreen() {
 
   const loadData = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('lastRecord');
-      if (jsonValue != null) {
-        setLastMeal(JSON.parse(jsonValue));
-      }
+      const lastRecordValue = await AsyncStorage.getItem('lastRecord');
+      const profileValue = await AsyncStorage.getItem('userProfile');
+      
+      if (lastRecordValue) setLastMeal(JSON.parse(lastRecordValue));
+      if (profileValue) setUserProfile(JSON.parse(profileValue));
     } catch (e) {
       console.error("Error leyendo datos", e);
     }
@@ -68,6 +66,42 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* SECCIÓN DE ESTADÍSTICAS Y LÍMITES */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Balance Nutricional Diario 📊</Text>
+          <Text style={styles.hintText}>Basado en tu último registro y límites</Text>
+          
+          {/* Carbohidratos */}
+          <View style={styles.statRow}>
+            <View style={styles.statLabelRow}>
+              <Text style={styles.statLabel}>Carbohidratos</Text>
+              <Text style={styles.statValue}>{lastMeal?.carbs || 0} / {userProfile?.limitCarbs || 0}g</Text>
+            </View>
+            <View style={styles.progressBarBg}>
+              <View style={[
+                styles.progressBarFill, 
+                { width: `${Math.min(((lastMeal?.carbs || 0) / (userProfile?.limitCarbs || 1)) * 100, 100)}%`,
+                  backgroundColor: (lastMeal?.carbs > userProfile?.limitCarbs) ? '#FF5252' : Colors.primary }
+              ]} />
+            </View>
+          </View>
+
+          {/* Azúcares */}
+          <View style={styles.statRow}>
+            <View style={styles.statLabelRow}>
+              <Text style={styles.statLabel}>Azúcares</Text>
+              <Text style={styles.statValue}>{lastMeal?.sugar || 0} / {userProfile?.limitSugar || 0}g</Text>
+            </View>
+            <View style={styles.progressBarBg}>
+              <View style={[
+                styles.progressBarFill, 
+                { width: `${Math.min(((lastMeal?.sugar || 0) / (userProfile?.limitSugar || 1)) * 100, 100)}%`,
+                  backgroundColor: (lastMeal?.sugar > userProfile?.limitSugar) ? '#FF5252' : '#E91E63' }
+              ]} />
+            </View>
+          </View>
+        </View>
+
         {/* Plan nutricional */}
         <View style={styles.dietCard}>
           <View style={styles.dietHeader}>
@@ -77,11 +111,11 @@ export default function HomeScreen() {
           
           <View style={styles.dietInfoRow}>
             <View style={styles.dietBadge}>
-              <Text style={styles.dietBadgeText}>{userProfile.dietType}</Text>
+              <Text style={styles.dietBadgeText}>No definida</Text>
             </View>
             <View style={styles.allergySection}>
               <Ionicons name="warning-outline" size={16} color="#E65100" />
-              <Text style={styles.allergyText}>{userProfile.allergies}</Text>
+              <Text style={styles.allergyText}>Sin alergias alimentarias</Text>
             </View>
           </View>
         </View>
@@ -272,6 +306,14 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontWeight: '500',
   },
+  // Estilos de estadísticas
+  statRow: { marginBottom: 15 },
+  statLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 },
+  statLabel: { fontSize: 14, color: Colors.text, fontWeight: '500' },
+  statValue: { fontSize: 12, color: Colors.textSecondary },
+  progressBarBg: { height: 8, backgroundColor: '#E0E0E0', borderRadius: 4, overflow: 'hidden' },
+  progressBarFill: { height: '100%', borderRadius: 4 },
+  hintText: { fontSize: 12, color: Colors.textSecondary, marginBottom: 15 },
   // Estilos Monitoreo
   monitoringRow: {
     flexDirection: 'row',
