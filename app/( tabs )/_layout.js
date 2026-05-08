@@ -8,7 +8,7 @@ export default function TabLayout() {
     <Tabs screenOptions={{
       tabBarActiveTintColor: Colors.primary,
       tabBarInactiveTintColor: 'gray',
-      headerShown: false, // Ocultamos el header por defecto para usar nuestras Navbars
+      headerShown: false,
       tabBarStyle: {
         height: 60,
         paddingBottom: 10,
@@ -19,7 +19,7 @@ export default function TabLayout() {
     }}>
       {/* Pestaña de Inicio */}
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Inicio',
           tabBarIcon: ({ color, focused }) => (
@@ -28,9 +28,9 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Pestaña de Historial (NUEVA CONEXIÓN) */}
+      {/* Pestaña de Historial */}
       <Tabs.Screen
-        name="historial" // Debe coincidir con el nombre del archivo historial.js
+        name="historial"
         options={{
           title: 'Historial',
           tabBarIcon: ({ color, focused }) => (
@@ -41,12 +41,20 @@ export default function TabLayout() {
 
       {/* Pestaña de Perfil */}
       <Tabs.Screen
-        name="perfil" // Debe coincidir con el nombre del archivo perfil.js
+        name="perfil"
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
           ),
+        }}
+      />
+
+      {/* Ocultamos el Login/Index para que no ocupe espacio abajo */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
